@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sistema de Gestión Ambiental-Monitoreo y Control de Indicadores Ambientales">
+    <title>SGA-Sistema de Gestión Ambiental</title>
+    <link rel="stylesheet" href="SGA-MaquetadoCSS.css">
+    <!-- Bootstrap 5.3 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+ <style>
+    .auth-container {
+        max-width: 420px;
+        margin: 60px auto;
+        padding: 20px;
+    }
+    .hidden { display: none !important; }
+    /* ══════════════════════════════════════════
+       RAMA DE COLORES — SGA HIDROITUANGO
+    ══════════════════════════════════════════ */
+    :root {
+      /* Verdes corporativos */
+      --sga-900: #0a2e1a;
+      --sga-800: #0f3d22;
+      --sga-700: #155229;
+      --sga-600: #1a6634;
+      --sga-500: #1f7a3e;   /* primario */
+      --sga-400: #28a84f;   /* acento fuerte */
+      --sga-300: #52c46e;
+      --sga-200: #8ddda0;
+      --sga-100: #c6f0d0;
+      --sga-50:  #edfaf1;
+
+      /* Semáforo ambiental */
+      --alerta-critica:   #dc2626;
+      --alerta-advertencia: #d97706;
+      --alerta-info:      #0369a1;
+      --alerta-ok:        #16a34a;
+
+      /* Neutros */
+      --gray-950: #0b0f0c;
+      --gray-900: #111713;
+      --gray-800: #1c2420;
+      --gray-700: #2e3a33;
+      --gray-600: #4a5e52;
+      --gray-400: #8ca898;
+      --gray-200: #d6e4dc;
+      --gray-100: #edf4f0;
+      --gray-50:  #f7faf8;
+
+      /* Superficies */
+      --surface-dark:  #0f1a13;
+      --surface-card:  #ffffff;
+      --surface-aside: #0f3d22;
+
+      /* Tipografía */
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+
+      /* Sombras */
+      --shadow-card: 0 2px 12px rgba(10,46,26,.10), 0 1px 3px rgba(10,46,26,.06);
+      --shadow-btn:  0 4px 14px rgba(31,122,62,.35);
+    }
+    header {
+      background: transparent;
+      border-bottom: 1px solid var(--gray-200);
+      box-shadow: 0 1px 4px rgba(10,46,26,.06);
+      position: sticky;
+      padding: .6rem 0;
+      top: 0;
+      z-index: 1030;
+      background-color: #fff;
+    }
+    header.sga-header .navbar.bg-body-tertiary {
+      --bs-bg-opacity: 0;
+      background-color: transparent !important;
+    }
+     .nav-tabs {
+      border-bottom: none;          
+    }
+    .nav-tabs .nav-link {
+      color: var(--gray-600);
+      font-size: .875rem;
+      font-weight: 500;
+      border: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+      padding: .45rem .85rem;
+      transition: color .2s, border-color .2s;
+    }
+     .nav-tabs .nav-link:hover {
+      color: var(--sga-700);
+      border-bottom-color: var(--sga-300);
+      background: transparent;
+    }
+      .nav-tabs .nav-link.active {
+      color: var(--sga-600) !important;
+      border-bottom: 2px solid var(--sga-400);
+      background: transparent;
+      font-weight: 600;
+    }
+.sga-user-section {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+    .sga-user-info .fw-bold {
+      font-size: .85rem;
+      color: var(--gray-800);
+      line-height: 1.2;
+    }
+    .sga-user-info .text-muted {
+      font-size: .72rem;
+      color: var(--gray-500) !important;
+    }
+    .btn-cerrar-sesion {
+      font-size: .8rem;
+      font-weight: 600;
+      padding: .35rem .9rem;
+      border-radius: .5rem;
+      background: #fee2e2;
+      color: var(--alerta-critica);
+      border: 1px solid #fecaca;
+      transition: background .18s, color .18s;
+      cursor: pointer;
+    }
+    .btn-cerrar-sesion:hover {
+      background: var(--alerta-critica);
+      color: #fff;
+    }
+
+    /* Estilo visual para fieldsets */
+    fieldset {
+      border: 1px solid var(--gray-200);
+      border-radius: .75rem;
+      padding: 1.25rem 1.25rem 1.5rem;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 1px 4px rgba(10,46,26,.08);
+      margin-bottom: 1.5rem;
+    }
+
+    fieldset legend {
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0 .5rem;
+    }
+    footer {
+  background: linear-gradient(to right, #00c853, #2962ff); /* verde a azul */
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+footer ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+footer ul li {
+  display: inline;
+  margin: 0 10px;
+}
+
+footer ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+footer ul li a:hover {
+  text-decoration: underline;
+}
+  /* Filtros: borde en reposo, relleno al seleccionar */
+  .filtro-label { transition: background .18s, color .18s; }
+  #filtro-validados:checked + .filtro-label { background:#16a34a !important; color:#fff !important; }
+  #filtro-alerta:checked   + .filtro-label { background:#dc2626 !important; color:#fff !important; }
+    </style>
+</head>
+<script src="sga-backend.js"></script>
+<script src="index.html"></script>
+<script src="modulo-registros.html"></script>
+<body>
+ <!-- ====================== LOGIN ====================== -->
+<div id="loginPage">
+    <div class="auth-container card shadow mx-auto" style="max-width: 420px; margin-top: 80px;">
+        <div class="card-header text-center bg-success text-white">
+            <h4><i class="bi bi-leaf"></i> SGA - Iniciar Sesión</h4>
+        </div>
+        <div class="card-body p-4">
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" id="loginEmail" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <input type="password" id="loginPass" class="form-control" required>
+                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                            <i class="bi bi-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Iniciar Sesión</button>
+            </form>
+            <p class="text-center mt-3">
+                ¿No tienes cuenta? 
+                <a href="#" onclick="mostrarRegistro()">Regístrate aquí</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ====================== REGISTRO ====================== -->
+<div id="registroPage" class="hidden">
+    <div class="auth-container card shadow mx-auto" style="max-width: 420px; margin-top: 80px;">
+        <div class="card-header text-center bg-primary text-white">
+            <h4><i class="bi bi-person-plus"></i> Registro de Usuario</h4>
+        </div>
+        <div class="card-body p-4">
+            <form id="registroForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Nombres</label>
+                        <input type="text" id="regNombres" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Apellidos</label>
+                        <input type="text" id="regApellidos" class="form-control" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="regEmail" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Contraseña</label>
+                    <input type="password" id="regPass" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Rol</label>
+                    <select id="regRol" class="form-select" required>
+                        <option value="">Seleccionar rol...</option>
+                        <option value="Operativo">Operativo</option>
+                        <option value="Supervisor">Supervisor</option>
+                        <option value="Gerente">Gerente Ambiental</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+                <button type="button" class="btn btn-secondary w-100 mt-2" onclick="mostrarLogin()">Volver al Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ====================== DASHBOARD (se muestra después de login) ====================== -->
+<div id="mainApp" class="hidden">
+    <header class="bg-success text-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h4><i class="bi bi-leaf"></i> SGA - Gestión Ambiental</h4>
+            <div>
+                <span id="userInfo" class="me-3"></span>
+                <button onclick="logout()" class="btn btn-light btn-sm">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mt-4">
+        <h2 id="welcomeMessage"></h2>
+        
+        <!-- Opción Editar Registros -->
+        <div class="mt-4">
+            <button onclick="editarRegistros()" class="btn btn-warning btn-lg">
+                <i class="bi bi-pencil-square"></i> Editar Registros
+            </button>
+        </div>
+
+        <!-- Aquí va tu dashboard anterior -->
+        <div id="contenidoDinamico">
+            <!-- Tu contenido anterior (tablas, formularios, etc.) -->
+        </div>
+    </div>
+</div>
+<script>
+// ====================== FUNCIONES DE AUTENTICACIÓN ======================
+let usuarioActual = null;
+
+function togglePassword() {
+    const passInput = document.getElementById('loginPass');
+    const eyeIcon = document.getElementById('eyeIcon');
+    if (passInput.type === "password") {
+        passInput.type = "text";
+        eyeIcon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+        passInput.type = "password";
+        eyeIcon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+}
+
+function mostrarLogin() {
+    document.getElementById('loginPage').classList.remove('hidden');
+    document.getElementById('registroPage').classList.add('hidden');
+    document.getElementById('mainApp').classList.add('hidden');
+}
+
+function mostrarRegistro() {
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('registroPage').classList.remove('hidden');
+}
+
+// LOGIN
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+
+    const usuarios = JSON.parse(localStorage.getItem('usuariosSGA')) || [];
+    const usuario = usuarios.find(u => u.email === email && u.password === pass);
+
+    if (usuario) {
+        usuarioActual = usuario;
+        localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
+        cargarDashboard();
+    } else {
+        alert('❌ Credenciales incorrectas');
+    }
+});
+
+// REGISTRO
+document.getElementById('registroForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const nombres = document.getElementById('regNombres').value.trim();
+    const apellidos = document.getElementById('regApellidos').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPass').value.trim();
+    const rol = document.getElementById('regRol').value;
+
+    if (!nombres || !apellidos || !email || !password || !rol) {
+        alert('❌ Todos los campos son obligatorios');
+        return;
+    }
+
+    let usuarios = JSON.parse(localStorage.getItem('usuariosSGA')) || [];
+
+    if (usuarios.find(u => u.email === email)) {
+        alert('❌ Este correo ya está registrado');
+        return;
+    }
+
+    const numeroRegistro = "REG-" + Date.now().toString().slice(-6);
+
+    const nuevoUsuario = {
+        id: Date.now(),
+        numeroRegistro: numeroRegistro,
+        nombres,
+        apellidos,
+        email,
+        password,
+        rol,
+        fechaRegistro: new Date().toLocaleDateString('es-CO')
+    };
+
+    usuarios.push(nuevoUsuario);
+    localStorage.setItem('usuariosSGA', JSON.stringify(usuarios));
+
+    alert(`✅ Registro exitoso!\nTu número de registro es: ${numeroRegistro}`);
+    mostrarLogin();
+});
+
+function cargarDashboard() {
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('registroPage').classList.add('hidden');
+    document.getElementById('mainApp').classList.remove('hidden');
+
+    document.getElementById('userInfo').innerHTML = `
+        ${usuarioActual.nombres} ${usuarioActual.apellidos} 
+        <span class="badge bg-light text-dark">${usuarioActual.rol}</span>
+    `;
+
+    document.getElementById('welcomeMessage').innerHTML = `
+        Bienvenido/a, <strong>${usuarioActual.nombres}</strong> 
+        <small class="text-muted">(${usuarioActual.rol}) - Nº ${usuarioActual.numeroRegistro || 'N/A'}</small>
+    `;
+
+    // Aquí puedes poner tu dashboard anterior
+    document.getElementById('contenidoDinamico').innerHTML = `
+        <h3>Dashboard - ${usuarioActual.rol}</h3>
+        <p>Contenido según rol. Opción "Editar Registros" disponible arriba.</p>
+    `;
+}
+
+function editarRegistros() {
+    alert("🔧 Función de Editar Registros activada.\nAquí iría tu tabla editable.");
+    // Puedes redirigir o mostrar una sección de edición
+}
+
+function logout() {
+    if (confirm('¿Cerrar sesión?')) {
+        localStorage.removeItem('usuarioLogueado');
+        location.reload();
+    }
+}
+
+// Verificar sesión al cargar
+window.onload = () => {
+    const sesion = localStorage.getItem('usuarioLogueado');
+    if (sesion) {
+        usuarioActual = JSON.parse(sesion);
+        cargarDashboard();
+    } else {
+        mostrarLogin();
+    }
+};
+</script>
+<header>
+     <!-- ========= SKIP LINK (Accesibilidad) =========-->
+<a class="icon-link" href="#main-content" aria-label="Saltar al contenido principal">
+  Ir al contenido principal
+  <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+  </svg>
+</a>
+<div>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="img/Gemini_Generated_Image_h51mgh51mgh51mgh.png" alt="Logo" class="me-2" style="height: 90px; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.3);">
+      SGA-Sistema de Gestión Ambiental
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#dashboard">Dashboard</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#registros" aria-current="page">Registros</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#indicadores" aria-current="page">Indicadores</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" aria-current="page" href="#alertas">Alertas</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#reportes" aria-current="page">Reportes</a>
+  </li>
+</ul>
+<section aria-label="Información de Usuario activo">
+<p class="fw-bold">Bienvenid@, Silvia Rangel</p>
+<p class="text-muted">Rol: Operativo</p>
+<button class="btn btn-primary" href="#" role="button" onclick="handleLogout()" aria-label="Cerrar Sesión del Sistema">Cerrar Sesión</button>
+</section>
+</div>
+</header>
+<div id="dashboard">
+    <div class="card text-center">
+      <div class="card-header">
+        Sistema en Línea - Monitoreo Ambiental
+      </div>
+      <div class="card-body">
+        <aside aria-label="Panel inferior con resumen y acciones">
+          <section aria-labelledby="bienvenida-heading">
+            <h2 id="bienvenida-heading">¡Bienvenida, Silvia!</h2>
+                <p class="card-text">🌿Planta HIDROITUANGO.</p>
+            <div class="card-footer text-body-secondary">
+              <time datetime="2026-03-06">Viernes, 6 de marzo del 2026</time>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </div>
+  <div class="card-group position-relative" style="padding-top: 2.5rem;">
+    <h3 class="card-group-label" style="position: absolute; top: .5rem; left: .75rem; margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--sga-900);">Resumen de hoy</h3>
+    <div class="card">
+      <article aria-label="Emisiones CO2: 1,950 kg, incremento del 12%">
+        <img src="img/1234.jpeg" class="card-img-top" class="rounded mx-auto d-block" alt="Gráfico de Emisiones de CO2" width="150" height="300">
+        <div class="card-body">
+          <h4 class="card-title">Emisiones de CO2</h4>
+          <P class="card-text">1,950 kg</P>
+          <p class="card-text"><small class="text-muted">Porcentaje de aumento respecto ayer</small></p>
+        </div>
+        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valvenow="12" aria-valuemin="12" aria-valuemax="100">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 12%">12% ⬆️</div>
+        </div>
+      </article>
+    </div>
+    <div class="card">
+      <article aria-label="Consumo de agua hoy: 132 m3, alerta crítica activa">
+        <img src="img/2017-09-30-05-27-54.jpg" class="card-img-top" class="rounded mx-auto d-block" alt="Gráfico de Consumo de Agua" width="150" height="300">
+        <div class="card-body">
+          <h4 class="card-title">Consumo de Agua</h4>
+          <P class="card-text">132 m³</P>
+          <p class="card-text"><small class="text-muted">Alerta crítica activa</small></p><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+</svg>
+</div>
+      </article>
+    </div>
+    <div class="card">
+      <article aria-label="Consumo de energía hoy: 4,820 kWh, reducción del 5%">
+        <img src="img/energia-verde-con-mano-sosteniendo-un-fondo-de-bombilla-ambiental-scaled.jpg" class="card-img-top" class="rounded mx-auto d-block" alt="Gráfico de Consumo de Energía" width="150" height="300">
+        <div class="card-body">
+          <h4 class="card-title">Consumo de Energía</h4>
+          <P class="card-text">4,820 kWh</P>
+          <p class="card-text"><small class="text-muted">Porcentaje de aumento respecto ayer</small></p>
+        </div>
+        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valvenow="-5" aria-valuemin="-5" aria-valuemax="100">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 12%">-5% ⬇️</div>
+        </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+<aside>
+        <div class="btn-group" role="group" aria-label="Acciones rápidas del panel lateral">
+          <h3 class="btn-group-label" style="font-size: 1.25rem; font-weight: 700; color: var(--sga-900);">Acciones rápidas</h3>
+          <ul class="list-unstyled">
+          <nav aria-label="Acciones rápidas del panel lateral">
+            <li class="nav-item">
+                <input type="radio" class="btn-check" name="btnRegistro" id="registro" autocomplete="off" onclick="scrollToForm()" checked>
+                <label class="btn btn-outline-primary" for="registro">Nuevo Registro</label>
+            </li>
+            <li class="nav-item">
+                <input type="radio" class="btn-check" name="btnDatos" id="exportarDatos" autocomplete="off" onclick="exportarDatos()" checked>
+                <label class="btn btn-outline-primary" for="exportarDatos">Exportar Datos</label>
+            </li>
+            <li class="nav-item">
+                  <input type="radio" class="btn-check" name="btnAlertas" id="verAlertas" autocomplete="off" onclick="verAlertas()" checked>
+                  <label class="btn btn-outline-primary" for="verAlertas">Ver Alertas (3)</label>
+            </li>
+            <li class="nav-item">
+                  <input type="radio" class="btn-check" name="btnCalendario" id="calendario" autocomplete="off" onclick="calendario()" checked>
+                  <label class="btn btn-outline-primary" for="calendario">Calendario</label>
+            </li>
+          </nav>
+        </ul>
+      </div>
+    </aside>
+    <section id="indicadores" aria-labelledby="kpi-heading">
+      <h2 id="kpi-heading" class="text-center" style="color: var(--sga-900);">Indicadores Clave del Día</h2>
+          <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col">
+              <article aria-label="Indicador de emisiones de CO2: 1,950 kg, al 78% del límite diario"><div class="card-body">
+                <header>
+                  <h3 class="card-title">Emisiones de CO2</h3>
+                </header>
+                <p class="card-text">1,950 kg</p>
+                <p class="card-text">
+                  <label for="prog-co2"> Progreso hacía límite diario </label>
+                  <div class="progress" role="progressbar" aria-label="78% del límite diario de CO2 alcanzado" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100">
+                    <div id="prog-co2" class="progress-bar progress-bar-striped" style="width: 78%">78%</div>
+                  </div>
+                </p>
+                <p class="card-text">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-square-fill" viewBox="0 0 16 16">
+  <path d="M2 16a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2zm6.5-4.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 1 0"/>
+</svg> Aumento del 12% respecto ayer
+                </p>
+            </article>
+          </div>
+          <div class="col">
+            <article aria-label="Indicador de consumo de agua: 132 m3, alerta crítica al 95% del límite">
+              <header>
+                <h3 class="card-title">Consumo de Agua</h3>
+              </header>
+              <p class="card-text">132 m³</p>
+              <p class="card-text">
+                <label for="prog-agua"> Progreso hacía límite diario </label>
+                <div class="progress" role="progressbar" aria-label="95% del límite diario de consumo de agua alcanzado, alerta crítica activa" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100">
+                  <div id="prog-agua" class="progress-bar progress-bar-striped bg-danger" style="width: 95%; color: white;">95% - Alerta Crítica</div>
+                </div>
+              </p>
+              <p class="card-text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle-fill" viewBox="0 0 16 16" style="color:darkorange;">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4m.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
+</svg> Supera el límite diario de 120 m3
+</p>
+            </article>
+          </div>
+          <div class="col">
+            <article aria-label="Indicador de consumo de energía: 4,820 kWh, al 55% del límite diario">
+              <header>
+                <h3 class="card-title">Consumo de Energía</h3>
+              </header>
+              <p class="card-text">4,820 kWh</p>
+              <p class="card-text">
+                <label for="prog-energia"> Progreso hacía límite diario </label>
+                <div class="progress" role="progressbar" aria-label="55% del límite diario de consumo de energía alcanzado" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100">
+                  <div id="prog-energia" class="progress-bar progress-bar-striped bg-success" style="width: 55%; color: white;">55%</div>
+                </div>
+                <p class="card-text">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-arrow-down-fill" viewBox="0 0 16 16">
+  <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M8 5a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5A.5.5 0 0 1 8 5"/>
+</svg> Reducción del 5% respecto ayer
+                </p>
+            </article>
+          </div>
+          <div class="col">
+            <article aria-label="Hay 3 alertas activas: 2 críticas y 1 advertencia">
+              <header>
+                <h3 class="card-title">Alertas Activas</h3>
+              </header>
+              <p class="card-text">3 alertas
+              </p>
+              <ul>
+                <li> 
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-exclamation-fill" viewBox="0 0 16 16" style="color:goldenrod">
+  <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.026A2 2 0 0 0 2 14h6.256A4.5 4.5 0 0 1 8 12.5a4.49 4.49 0 0 1 1.606-3.446l-.367-.225L8 9.586zM16 4.697v4.974A4.5 4.5 0 0 0 12.5 8a4.5 4.5 0 0 0-1.965.45l-.338-.207z"/>
+  <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1.5a.5.5 0 0 1-1 0V11a.5.5 0 0 1 1 0m0 3a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
+</svg>2 críticas </li>
+<li>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16" style="color:red">
+  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+</svg>1 advertencia
+</li>
+              </ul>
+              <p> <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#alertas-section"> Ver todas las alertas
+  <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+  </svg>
+</a></p>
+            </article>
+        </div>
+    </section>
+    <section aria-labelledby="form-heading" id="registros">
+      <h2 id="form-heading" class="text-center" style="color: var(--sga-900);">Nuevo Registro de Indicador Ambiental</h2>
+      <div class="mb-3">
+        <label for="form-heading" class="form-label">Todos los campos marcados con <abbr title="obligatorio">*</abbr>son requeridos</label>
+      </div>
+      <form id="formRegistro" onsubmit="guardarRegistro(event)" novalidate aria-label="Formulario de registro de indicadores ambientales">
+        <fieldset>
+          <legend class="btn-group-label" id="DatosIndicador"
+                  style=" font-size: 1.25rem; font-weight: 700; color:var(--sga-900);">
+            <i class="bi bi-clipboard-data me-1" aria-hidden="true"></i>
+            Datos del Indicador
+          </legend>
+          <div class="mb-3">
+                      <label id="indicador-name" class="form-label fw-semibold">
+          Tipo de indicador: <abbr title="obligatorio" class="text-danger">*</abbr>
+                      </label>
+        <select class="form-select" aria-label="indicador" name="indicador" required aria-required="true" aria-describedby="indicador-desc">
+          <option selected>-Seleccionar indicador-desc-</option>
+          <optgroup label="Emisiones Atmosféricas">
+            <option value="co2">Emisiones de CO2 (kg)</option>
+            <option value="metano">Metano CH4 (kg)</option>
+            <option value="nox">Óxidos de Nitrógeno NOx (kg)</option>
+          </optgroup>
+          <optgroup label="Consumo de Recursos">
+            <option value="agua">Consumo de Agua (m³)</option>
+            <option value="energia">Consumo de Energía (kWh)</option>
+            <option value="combustible">Consumo de Combustible (litros)</option>
+          </optgroup>
+          <optgroup label="Residuos">
+            <option value="solidos">Residuos Sólidos (kg)</option>
+            <option value="liquidos">Residuos Líquidos (litros)</option>
+            <option value="peligrosos">Residuos Peligrosos (kg)</option>
+          </optgroup>
+        </select>
+        </div>
+                <div id="indicador-desc" class="form-text" class="form-label fw-semibold">
+          Seleccione el tipo de indicador ambiental
+        </div>
+        </fieldset>
+        <fieldset>
+          <!-- El script, fue basado en el de bootstrap; sin embargo, su escritura fue realizada con la inteligencia artificial CLAUDE CODE. 
+           Aspiro a que no sea un problema-->
+          <label id="valor" class="form-label fw-semibold">
+            Valor Medido <abbr title="obligatorio" class="text-danger">*</abbr>
+          </label>
+          <label id="valor" class="form-label"> Rango de Medición </label>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <input type="number" class="form-control" 
+            id="valor"
+            name="valor"
+            step="0.01" min="0" max="100" value="0" placeholder="Ej: 50.00" required aria-required="true" aria-describedby="valor-desc" aria-label="Valor medido"
+                   style="width:160px; font-weight:600; font-size:1rem;">
+            <div class="ms-2 d-flex flex-column">
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="incrementBtn" aria-label="Incrementar valor">
+                <i class="bi bi-chevron-up"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="decrementBtn" aria-label="Decrementar valor">
+                <i class="bi bi-chevron-down"></i>
+              </button>
+            </div>
+            <input type="number" class="form-control ms-2" id="valorNumber" min="0" max="100" step="0.01" value="0" style="width: 100px;" aria-label="Valor numérico">
+          </div>
+          <output for="valor" id="valorValue" class="badge ms-1"
+                    style="background:#1f7a3e; font-size:.85rem; padding:.4em .75em; border-radius:.5rem; color:#fff;"></output>
+                     <label for="valorRange" class="form-label mb-1" style="font-size:.82rem; color:#4a5e52;">
+            Rango de Medición
+            <span class="text-muted" style="font-size:.75rem;">
+              (el máximo se expande automáticamente al escribir)
+            </span>
+          </label>
+          <div class="d-flex align-items-center gap-2">
+            <span style="font-size:.78rem; color:#8ca898; min-width:24px;">0</span>
+            <input type="range"
+                   class="form-range flex-grow-1"
+                   id="valorRange"
+                   min="0"
+                   max="100"
+                   step="0.01"
+                   value="0"
+                   aria-label="Barra deslizable de valor medido">
+            <span id="rangeMaxLabel"
+                  style="font-size:.78rem; color:#8ca898; min-width:56px; text-align:right;">
+              100.00
+            </span>
+          </div>
+                    <div id="valor-desc" class="form-text">
+            Ingrese el valor numérico de la medición. Debe ser mayor o igual a cero.
+          </div>
+      </fieldset>
+      <fieldset class="mb-3">
+        <legend id="ContextoMedición" class="form-text" class="btn-group-label" style="font-size: 1.25rem; font-weight: 700; color: var(--sga-900);">
+          <i class="bi bi-file-ruled"></i>
+          Contexto de la Medición
+        </legend>
+        <div>
+          <label for="fecha" class="form-label fw-semibold">Fecha y Hora de la Medición</label>
+          <input type="datetime-local" class="form-control" id="fecha" aria-label="Fecha y Hora de la Medición" aria-describedby="fecha-desc" name="fecha">
+          <div id="fecha-desc" class="form-text">
+            Si no se específica, se usará la fecha y horas actuales al guardar</div>
+        </div>
+        <div>
+          <label for="planta" class="form-label fw-semibold">Planta/Unidad Operativa</label> 
+          <select class="form-select" aria-label="planta">
+            <option selected>-Seleccionar la Planta Operativa-</option>
+            <option value="Hidrosogamoso">Planta Hidrosogamoso</option>
+            <option value="Guatape">Planta Guatapé</option>
+            <option value="Termo-Norte">Planta Termo-Norte</option>
+            <option value="Enel">Planta Enel</option>
+          </select>
+          <div id="Planta-desc" class="form-text">
+            Selecciona la planta o unidad donde se realizó la medición
+          </div>
+        </div>
+        <div>
+          <label for="Turno" class="form-label fw-semibold">Turno de Trabajo</label>
+          <select class="form-selected" aria-label="Planta">
+            <option selected>-Turno de Operario-</option>
+            <option value="Mañana">Turno Mañana</option>
+            <option value="Tarde">Turno Tarde</option>
+            <option value="Noche">Turno Noche</option>
+          </select>
+        </div>
+        <div>
+          <label for="ResponsableMedición" class="form-label fw-semibold">
+            Responsable de la Medición</label>
+            <div class="col-auto">
+              <input type="text" id="ResponsableMedición" class="form-control" name="ResponsableMedición" value="Silvia Rangel" placeholder="Nombre de Usuario" aria-describedby="ResponsableMedición"></div>
+              <div id="ResponsableMedición" class="form-text">
+                Nombre de la persona que realizó la medición.
+              </div>
+            </div>
+            </div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend id="InformaciónAdicional" class="form-text" class="btn-group-label" style="font-size: 1.25rem; font-weight: 700; color: var(--sga-900);">
+          <i class="bi bi-file-earmark-plus"></i>
+          Información Adicional
+        </legend>
+        <div>
+          <label for="observaciones" class="form-label fw-semibold">Observaciones</label>
+          <textarea class="form-control" id="observaciones" rows="3" name="observaciones" placeholder="Notas, condiciones especiales o eventos relevantes durante la medición..." aria-describedby="observaciones-desc"></textarea>
+          <div id="observaciones" class="form-text">
+            (Opcional) Máximo 1000 carácteres.
+          </div>
+          <div>
+            <label for="evidencia" class="form-label fw-semibold">Adjuntar Evidencias/Documentos</label>
+            <input class="form-control" type="file" id="evidencia" name="evidencia" accept=" .jpg, .pdf, .jpeg, .png, .xlsx, .csv" aria-describedby="evidencia-desc" multiple>
+            <div id="evidencia" class="form-text">
+              Formatos aceptados: PDF, JPG, PNG, Excel, CSV. Tamaño máximo: 20 MB
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <div class="btn-group" role="group" aria-label="Acciones del Formulario">
+        <button type="submit" class="btn btn-outline-success">
+          <i class="bi bi-envelope-check"></i>
+          Guardar Registro Ambiental
+        </button>
+        <button type="reset" class="btn btn-outline-info">
+          <i class="bi bi-hurricane"></i>
+          Limpiar Formulario
+        </button>
+        <button type="button" class="btn btn-outline-primary">
+          <i class="bi bi-eye-fill"></i>
+          Previsualizar Registro
+        </button>
+      </div>
+      </form>
+    </section>
+    <section aria-labelledby="alertas-heading" id="alertas">
+            <h2 id="form-heading" class="text-center" style="color: var(--sga-900);">Alertas activas del Sistema </h2>
+      </span>
+      <p class="text-center">Se muestran 4 alertas. <a href="#" class="link-primary link-offset-2 link-underline-opacity-100-hover">Ver historial completo de alertas
+      </a>
+      <ul role="listbox" aria-label="lista de alertas ambientales">
+        <div class="card" role="alert" aria-labelledby="ConsumoAgua" tabindex="0">
+          <span id="ConsumoAgua" class="form-text float-none w-auto px-2 fs-6 card-header" style="font-size: 1.25rem; font-weight: 700; color: var(--sga-900);">
+            <i class="bi bi-droplet-half"></i> CRÍTICO-Consumo de Agua Excedido
+          </span>
+          <div class="card-body">
+            <p class="card-text"><time datetime="2026-03-06">Hoy, hace 2 horas</time></p>
+            <p class="text-start">El consumo de agua registró <strong>132 m3</strong>, superando el límite diario establecido de 120 m3 (+10%)</p>
+          <input class="form-check-input me-1" type="checkbox" value="" id="MarcarAtendida" aria-label="Marcar como alerta atendida">
+          <label class="form-check-label" for="MarcarAtendida">Marcar como atendida</label>
+          <a class="icon-link icon-link-hover" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0);" href="#">
+  <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+  Ver detalles de la alerta
+</a>
+        </div>
+        </div>
+        <div class="card" role="alert" aria-labelledby="Emisiones de CO2 en alsa" tabindex="0">
+          <span id="EmisionesC02" class="form-text float-none w-auto px-2 fs-6 card-header" style="font-size: 1.25rem; font-weight: 700; color: var(--sga-900);">
+            <i class="bi bi-wind"></i> CRÍTICO-Emisiones de CO2 en Tendencia
+          </span>
+          <div class="card-body">
+            <p class="card-text"><time datetime="2026-03-06">Hoy, hace 10 horas</time></p>
+            <p class="text-start">Las emisiones de CO2 han aumentado de forma consecutiva durante <strong>3 días</strong>. Nivel actual: 1,950 kg</p>
+            <input class="form-check-input me-1" type="checkbox" value="" id="MarcarAtendida" aria-label="Marcar como alerta atendida">
+            <label class="form-check-label" for="MarcarAtendida">Marcar como atendida</label>
+            <a class="icon-link icon-link-hover" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0);" href="#">
+  <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+  Ver detalles de la alerta
+</a>
+          </div>
+        </div>
+<div class="card" role="alert" aria-labelledby="CapacidadResiduos" tabindex="0">
+          <span id="CapacidadResiduos" class="form-text float-none w-auto px-2 fs-6 card-header" style="font-size: 1.25rem; font-weight: 700; color: var(--sga-900);">
+            <i class="bi bi-radioactive"></i> ADVERTENCIA-Capacidad de Residuos Próxima a Llenarse
+          </span>
+          <div class="card-body">
+            <p class="card-text"><time datetime="Ayer">Hace 48 horas</time></p>
+            <p class="text-start">El área de almacenamiento de residuos ha alcanzado el <strong>80%</strong> de su capacidad máxima</p>
+            <input class="form-check-input me-1" type="checkbox" value="" id="MarcarAtendida" aria-label="Marcar como alerta atendida">
+            <label class="form-check-label" for="MarcarAtendida">Marcar como atendida</label>
+            <a class="icon-link icon-link-hover" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0);" href="#">
+  <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+  Ver detalles de la alerta
+</a>
+</div>
+</div>
+<div class="card" role="document" aria-labelledby="Información" tabindex="0">
+  <span id="Información-Reporte Mensual" class="form-text float-none w-auto px-2 fs-6 card-header" style="font-size: 1.25rem; font-weight: 700; color: var(--sga-900);">
+    <i class="bi bi-journals"></i> INFORMACIÓN-Reporte Mensual Disponible
+  </span>
+  <div class="card-body">
+    <p class="card-text"><time datetime="Recordatorio Automático">Recordatorio Automático</time></p>
+    <p class="text-start">El reporte ambiental del mes de <strong>ener del 2026</strong> vence en <strong>3 días</strong>. Verifique que todos los datos estén registrados</p>
+    <button type="button" onclick="generarReportePDF()" class="btn btn-primary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" aria aria-label="Generar reporte en PDF">
+      Descargar Reporte (PDF)
+    </button>
+    <a class="icon-link icon-link-hover" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0);" href="#">
+  <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+  Ver detalles del reporte
+</a>
+  </div>
+</div>
+      </ul>
+    </section>
+<div>
+  <h2 id="Historial-Section" aria-labelledby="Tabla-heading" class="text-center" style="color: var(--sga-900);">Historial de Registros Ambientales</h2>
+<div class=" input-group mb-3">
+  <label for="Registro" class="form-label mb-0 fw-semibold text-nowrap" style="color: var(--sga-900);">Buscar Registro:</label>
+  <input type="text" class="form-control" id="Registro" placeholder="Escriba para buscar..." aria-label="Buscar en la tabla de registros" oninput="buscarEnTabla(this.value)">
+  <button type="submit" class="btn btn-primary text-nowrap" onclick="buscarEnTabla(document.getElementById('Registo').value)" aria-label="Ejecutar búsqueda de registros">
+    <i class="bi bi-search"></i>
+    Buscar
+  </button>
+</div>
+</div>
+<style>
+  #validados:checked   + .filtro-label { background: #16a34a !important; color: #fff !important; }
+  #En\ Alerta:checked  + .filtro-label { background: var(--alerta-critica, #dc2626) !important; color: #fff !important; }
+  #Pendientes:checked + .filtro-label { background: var(--alerta-advertencia, #eab308) !important; color: #fff !important; }
+  #Todos:checked      + .filtro-label { background: var(--alerta-info, #3b82f6) !important; color: #fff !important; }
+</style>
+<div role="group" class="d-flex align-items-center flex-wrap gap-2" aria-label="filtrar registros por estado">
+  <span for="filtrarEstado" class="form-label mb-0 fw-semibold text-nowrap" style="color: var(--sga-900);">Filtrar por estado:</span>
+  <input type="radio" class="btn-check"  name="filtroEstado" id="validados" onclick="filtrarTabla('validado', this)" aria-pressed="false" aria-label="Mostrar sólo registros validados" autocomplete="off">
+  <label class="btn btn-outline-primary filtro-label" for="validados" style="border: 2px solid #16a34a; color: #16a34a; background: transparent;">Validados</label>
+  
+  <input type="radio" class="btn-check" name="filtroEstado" id="En Alerta" onclick="filtrarTabla('alerta', this)" aria-pressed="false" aria-label="Mostrar sólo registros con alertas">
+  <label class="btn btn-outline-primary filtro-label" for="En Alerta" style="border: 2px solid var(--alerta-critica); color: var(--alerta-critica); background: transparent;">En Alerta</label>
+
+   <input type="radio" class="btn-check" name="filtroEstado" id="Pendientes" onclick="filtrarTabla('Pendientes', this)" aria-pressed="false" aria-label="Mostrar sólo registros pendientes">
+  <label class="btn btn-outline-primary filtro-label" for="Pendientes" style="border: 2px solid var(--alerta-advertencia); color: var(--alerta-advertencia); background: transparent;">Pendientes</label>
+
+  <input type="radio" class="btn-check" name="filtroEstado" id="Todos" onclick="filtrarTabla('Todos', this)" aria-pressed="false" aria-label="Mostrar todos los registros">
+  <label class="btn btn-outline-primary filtro-label" for="Todos" style="border: 2px solid var(--alerta-info); color: var(--alerta-info); background: transparent;">Todos</label>
+</div>
+<section>
+  <legend id="ÚltimosRegistrosAmbientales" class="form-text" class="btn-group-label" style="font-size: 1.25rem; font-weight: 700; color: var(--sga-900);">
+    <i class="bi bi-body-text"></i>
+    Últimos Registros Ambientales del Sistema 
+  </legend>
+  <p class="text-start"><strong>Incluye:</strong> fecha, indicador, valor medido, responsable, planta de origen y estado de validación</p>
+  <table class="table table-striped-columns" id="TabladeRegistros" aria-label="Últimos registros ambientales">
+    <thead>
+      <tr>
+        <th scope="col">Fecha/Hora</th>
+        <th scope="col">Indicador</th>
+        <th scope="col">Valor Medido</th>
+        <th scope="col">Responsable</th>
+        <th scope="col">Planta</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2025-10-28 10:30</td>
+        <td>Emisiones CO2</td>
+        <td>1,950 kg</td>
+        <td>Silvia Rangel</td>
+        <td>Planta HIDROITUANGO</td>
+        <td>Validado</td>
+        <td><button type="button" id="VerDetalles1" class="btn btn-primary btn-sm" aria-label="Ver detalles" style="border: 2px solid var(--sga-400); color: var(--sga-50); background-color: var(--sga-400);">Ver detalles</button></td>
+</td>
+      </tr>
+      <tr>
+        <td>2025-10-27 14:30</td>
+        <td>Consumo de Energía</td>
+        <td>1,200 kWh</td>
+        <td>María García</td>
+        <td>Planta Hidrosogamoso</td>
+        <td>En Alerta</td>
+        <td><button type="button" id="VerDetalles2" class="btn btn-primary btn-sm" aria-label="Ver detalles" style="border: 2px solid var(--sga-400); color: var(--sga-50); background-color: var(--sga-400);">Ver detalles</button></td>
+      </tr>
+      <tr>
+        <td>2025-10-26 09.15</td>
+        <td>Consumo de Agua</td>
+        <td>120 m3</td>
+        <td>Carlos López</td>
+        <td>Planta Guatapé</td>
+        <td>Pendiente</td>
+        <td><button type="button" id="VerDetalles3" class="btn btn-primary btn-sm" aria-label="Ver detalles" style="border: 2px solid var(--sga-400); color: var(--sga-50); background-color: var(--sga-50); background-color: var(--sga-400);">Ver detalles</button></td>
+      </tr>
+      <tr>
+        <td>2025-10-25 16:45</td>
+        <td>Residuos Sólidos</td>
+        <td>5 toneladas</td>
+        <td>Ana Martínez</td>
+        <td>Planta Termo-Norte</td>
+        <td>Validado</td>
+        <td><button type="button" id="VerDetalles4" class="btn btn-primary btn-sm" aria-label="Ver detalles" style="border: 2px solid var(--sga-400); color: var(--sga-50); background-color: var(--sga-50); background-color: var(--sga-400);">Ver detalles</button></td>
+      </tr>
+    </tbody>
+</table>
+<p class="form-text">Mostrando <strong> 5 </strong> de <strong> 128 </strong>registros totales.</p><a class="icon-link icon-link-hover" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0);" href="#">
+  <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+  Ver todos los registros
+</a>
+</section>
+<nav aria-label="Paginación de tablas de registros" role="navigation">
+  <ul class="pagination">
+    <li class="page-item"><a class="page-link" href="#">Página anterior</a></li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+  </ul>
+</nav>
+<section>
+  <legend id="ResumenPeríodo" class="form-text" class="btn-group-label" style="font-size: 1.25em; font-weight: 700; color: var(--sga-900);">
+    <i class="bi bi-calendar-check"></i>
+    Resumen del Período
+  </legend>
+  <div class="card" style="width: 18rem; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;">
+      <ul class="list-group list-group-flush">
+        <p class="fw-bold" class="text-center" style="background-color: #f0f0f0; text-align: center;">Total de Registros este Mes:</p>
+        <li class="list-group-item" style="text-align: center; font-size: 1.5em; vertical-align: top;">128</li>
+        <p class="fw-bold" class="text-center" style="background-color: #f0f0f0; text-align: center;">Registros Validados:</p>
+        <li class="list-group-item" style="text-align: center; font-size: 1.5em; vertical-align: top;">97(75%)</li>
+        <p class="fw-bold" class="text-center" style="background-color: #f0f0f0; text-align: center;">Registros en Alerta:</p>
+        <li class="list-group-item" style="text-align: center; font-size: 1.5em; vertical-align: top;">15(12%)</li>
+        <p class="fw-bold" class="text-center" style="background-color: #f0f0f0; text-align: center;">2025-10-28 10:00</p>
+      </ul>
+  </div>
+</section>
+<section aria-labelledby="reportes-heading" id="reportes">
+  <h2 id="reportes-headings" class="text-center" style="color: var(--sga-900);">
+    Generación de Reportes
+  </h2>
+  <form id="formReporte" onsubmit="generarReporte(event)" novalidate aria-label="Formulario para generación de reportes ambientales">
+    <fieldset>
+      <div class="mb-3">
+      <legend class="btn-group-label" id="PárametrosReporte" style="font-size: 1.25rem; font-weight: 700; color: var(--sga-900);">
+        <i class="bi bi-card-checklist"></i>
+        Parámetros de Reporte
+      </legend>
+      <label id="tipo-reporte" class="form-label fw-semibold">Tipo de Reporte: <abbr title="obligatorio" class="text-danger">*</abbr></label>
+      <select class="form-select" aria-label="formReporte" name="tipo-reporte" required aria-required="true" aria-describedby="reporte-desc">
+        <option selected>-Seleccionar-Tipo-</option>
+        <option value="mensual">Reporte Mensual Completo</option>
+        <option value="trimestral">Reporte Trimestral</option>
+        <option value="anual">Reporte Anual</option>
+        <option value="Indicador">Por Indicador Específico</option>
+        <option value="alerta">Historial de Alertas</option>
+      </select>
+      <label id="fechaInicio" class="form-label fw-semibold">Fecha de Inicio</label>
+      <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" required aria-required="true">
+      <div id="fecha-inicio-desc" class="form-text" class="form-label fw-semibold">Inicio del período a reportar.</div>
+      <label id="fechaFin" class="form-label fw-semibold">Fecha Fin</label>
+      <input type="date" class="form-control" id="fechaFin" name="fechaFin" required aria-required="true">
+      <div id="fecha-fin-desc" class="form-text" class="form-label fw-semibold">Fin del período a reportar.</div>
+      <label id="formato-Reporte" class="form-label fw-semibold">Formato de Salida:</label>
+      <select class="form-select" aria-label="formReporte" name="formato-reporte" required aria-required="true" aria-describedby="formato-desc">
+        <option selected>-Seleccionar-Formato-</option>
+        <option value="pdf">PDF</option>
+        <option value="excel">Excel</option>
+        <option value="csv">CSV</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm ms-2" aria-label="Generar reporte con los parámetros seleccionados" style="background-color: #52c46e; color: #0f1a13; border: 2px #52c46e;"><i class="bi bi-clipboard-check"></i>Generar Reporte</button>
+    <button type="reset" class="btn btn-secondary btn-sm ms-2" onclick="limpiarReporteForm()" aria-label="Limpiar formulario de generación de reportes" style="background-color: aqua; color: #0f1a13; border: 2px aqua;"><i class="bi bi-escape"></i>Restablecer</button>
+    </fieldset>
+  </form>
+</section>
+ <script>
+      /* =========================================================
+         VALOR MEDIDO  -  Rango 0 ... infinito (todos los reales)
+         ========================================================= */
+      const numInput   = document.getElementById('valorNumber');
+      const rangeInput = document.getElementById('valorRange');
+      const badge      = document.getElementById('valorValue');
+      const maxLabel   = document.getElementById('rangeMaxLabel');
+      const incBtn     = document.getElementById('incrementBtn');
+      const decBtn     = document.getElementById('decrementBtn');
+ 
+      /* Paso de las flechas y del range */
+      const STEP = 0.01;
+ 
+      /* Factor de expansión: cuando el valor supera el max actual
+         el nuevo max = valor * EXPAND_FACTOR                       */
+      const EXPAND_FACTOR = 2;
+ 
+      /* ---- Actualiza badge ---- */
+      function updateBadge(val) {
+        badge.value = isNaN(val) ? '0.00' : val.toFixed(2);
+        badge.textContent = badge.value;
+      }
+ 
+      /* ---- Expande el max del range si el valor lo supera ---- */
+      function expandRangeIfNeeded(val) {
+        if (val > parseFloat(rangeInput.max)) {
+          const newMax = Math.ceil(val * EXPAND_FACTOR * 100) / 100;
+          rangeInput.max = newMax;
+          maxLabel.textContent = newMax.toFixed(2);
+        }
+      }
+ 
+      /* ---- Sincroniza range -> number ---- */
+      function onRangeChange() {
+        const val = parseFloat(rangeInput.value);
+        numInput.value = val.toFixed(2);
+        updateBadge(val);
+      }
+ 
+      /* ---- Sincroniza number -> range (expande si es necesario) ---- */
+      function onNumberChange() {
+        let val = parseFloat(numInput.value);
+        if (isNaN(val) || val < 0) val = 0;
+        expandRangeIfNeeded(val);
+        rangeInput.value = val;
+        updateBadge(val);
+      }
+ 
+      /* ---- Flechas ▲ ▼ ---- */
+      incBtn.addEventListener('click', function () {
+        let val = parseFloat(numInput.value) || 0;
+        val = Math.round((val + STEP) * 1e10) / 1e10;   // evita drift float
+        numInput.value = val.toFixed(2);
+        onNumberChange();
+      });
+ 
+      decBtn.addEventListener('click', function () {
+        let val = parseFloat(numInput.value) || 0;
+        val = Math.max(0, Math.round((val - STEP) * 1e10) / 1e10);
+        numInput.value = val.toFixed(2);
+        onNumberChange();
+      });
+ 
+      /* ---- Listeners principales ---- */
+      rangeInput.addEventListener('input',  onRangeChange);
+      numInput.addEventListener('input',    onNumberChange);
+      numInput.addEventListener('change',   onNumberChange);
+ 
+      /* ---- Inicializar ---- */
+      updateBadge(0);
+    </script>
+    <footer>
+    <p>&copy; 2026 Sistema de Gestión Ambiental (SGA). Planta HIDROITUANGO. Todos los derechos reservados. Versión 2.4.1</p>
+    <ul>
+        <li><a href="#">Política Ambiental</a></li>
+        <li><a href="#">Manual de Usuario</a></li>
+        <li><a href="#">Soporte Técnico</a></li>
+        <li><a href="#">Normativa ISO 14001</a></li>
+    </ul>
+ </footer>
+<script src="sga-backend.js"></script>
+</body>
+</html>
