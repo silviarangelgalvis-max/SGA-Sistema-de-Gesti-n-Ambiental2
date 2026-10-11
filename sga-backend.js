@@ -570,20 +570,19 @@ function eliminarRegistro(id) {
   if(!confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')) return;
   RegistrosDB.eliminar(id); renderTabla(); renderAlertas(); renderResumenMes();
 }
-
 function generarReporte(event) {
   event.preventDefault();
-  const tipo   =document.querySelector('[name="tipo-reporte"]')?.value;
-  const inicio =document.getElementById('fechaInicio')?.value;
-  const fin    =document.getElementById('fechaFin')?.value;
-  const formato=document.querySelector('[name="formato-reporte"]')?.value;
-  if(!tipo||tipo.startsWith('-'))   { alert('⚠ Selecciona el tipo');   return; }
-  if(!inicio||!fin)                 { alert('⚠ Ingresa fechas');        return; }
-  if(!formato||formato.startsWith('-')){ alert('⚠ Selecciona formato'); return; }
-  const r=ReportesDB.generar(`Reporte ${tipo}`,tipo,formato,inicio,fin);
-  if(formato!=='pdf') alert(`✅ ${r.total} registros exportados como ${formato.toUpperCase()}`);
+  const tipo    = document.querySelector('select[name="tipo-reporte"]')?.value;
+  const inicio  = document.querySelector('input[name="fechaInicio"]')?.value;
+  const fin     = document.querySelector('input[name="fechaFin"]')?.value;
+  const formato = document.querySelector('select[name="formato-reporte"]')?.value;
+  if (!tipo || tipo.startsWith('-')) { alert('⚠ Selecciona el tipo'); return; }
+  if (!inicio || !fin)               { alert('⚠ Ingresa fechas'); return; }
+  if (inicio > fin)                  { alert('⚠ La fecha de inicio no puede ser mayor que la fecha fin'); return; }
+  if (!formato || formato.startsWith('-')) { alert('⚠ Selecciona formato'); return; }
+  const r = ReportesDB.generar(`Reporte ${tipo}`, tipo, formato, inicio, fin);
+  if (formato !== 'pdf') alert(`✅ ${r.total} registros exportados como ${formato.toUpperCase()}`);
 }
-
 function generarReportePDF() {
   const hoy=new Date().toISOString().slice(0,10);
   const hace30=new Date(Date.now()-30*86400000).toISOString().slice(0,10);
